@@ -12,4 +12,8 @@
     <ProjectReference Include="..\Figurasp.Riders.Service\Figurasp.Riders.Service.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
+
 </Project>
