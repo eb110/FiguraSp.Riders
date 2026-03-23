@@ -25,6 +25,17 @@ namespace FiguraSp.Riders.Api.Controllers
             return Ok(rider);
         }
 
+        [HttpPut]
+        public async Task<ActionResult<RiderResponseDto>> UpdateRider([FromBody] UpdateRiderRequestDto updateRider)
+        {
+            var response = await riderService.UpdateRider(updateRider);
+            if (!response.Success)
+            {
+                return NotFound("Rider not found.");
+            }
+            return Ok();
+        }
+
         [HttpGet]
         [Route("RiderByInitials")]
         public async Task<ActionResult<RiderResponseDto>> GetRiderByInitials(string name, string surname)
@@ -46,12 +57,19 @@ namespace FiguraSp.Riders.Api.Controllers
             {
                 return BadRequest("Rider with the same name and surname already exists.");
             }
-            //if (response.Success)
-            //{
-            //    return CreatedAtAction("GetRoleByName", new { roleName }, response);
-            //}
 
-            return StatusCode(201, response);
+            return CreatedAtAction("GetRiderByInitials", new { newRider.Name, newRider.Surname }, response);
+        }
+
+        [HttpDelete]
+        public async Task<ActionResult> DeleteRider(Guid id)
+        {
+            var response = await riderService.RemoveRider(id);
+            if (!response.Success)
+            {
+                return NotFound("Rider not found.");
+            }
+            return NoContent();
         }
     }
 }

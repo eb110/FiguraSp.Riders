@@ -2,7 +2,7 @@
 
 namespace FiguraSp.Riders.Model.DTOs.Requests
 {
-    public sealed class NewRiderRequestDto
+    public class NewRiderRequestDto
     {
         [Required]
         [MaxLength(30)]

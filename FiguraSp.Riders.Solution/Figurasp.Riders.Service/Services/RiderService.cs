@@ -60,6 +60,47 @@ namespace Figurasp.Riders.Service.Services
             var riders = await context.GetEntitiesToListAsync(query);
             return riders;
         }
+
+        public async Task<RiderResponseDto> RemoveRider(Guid id)
+        {
+            IQueryable<Rider> existQuery = context.Riders.Where(r => r.Id.Equals(id)).AsQueryable();
+            var existRider = await context.GetFirstOrDefaultAsync(existQuery);
+
+            if (existRider == null)
+            {
+                return new() { Errors = ["Rider not found"] };
+            }
+
+            context.Riders.Remove(existRider);
+            var check = await context.SaveChangesAsync();
+            if(check != 1)
+            {
+                return new() { Errors = ["Failed to remove rider"] };
+            }
+            return new() { Success = true, ResponseRider = existRider };
+        }
+
+        public async Task<RiderResponseDto> UpdateRider(UpdateRiderRequestDto riderDto)
+        {
+            IQueryable<Rider> existQuery = context.Riders.Where(r => r.Id.Equals(riderDto.Id)).AsQueryable();
+            var existRider = await context.GetFirstOrDefaultAsync(existQuery);
+            if (existRider == null)
+            {
+                return new() { Errors = ["Rider not found"] };
+            }
+            existRider.Surname = riderDto.Surname;
+            existRider.Name = riderDto.Name;
+            existRider.Nationality = riderDto.Nationality;
+            existRider.DoB = riderDto.DoB;
+            existRider.PictureUrl = riderDto.PictureUrl;
+            context.Update(existRider);
+            var check = await context.SaveChangesAsync();
+            if (check != 1)
+            {
+                return new() { Errors = ["Failed to update rider"] };
+            }
+            return new() { Success = true, ResponseRider = existRider };
+        }
     }
 
     public interface IRiderService
@@ -68,5 +109,7 @@ namespace Figurasp.Riders.Service.Services
         public Task<Rider> GetRiderById(Guid id);
         public Task<RiderResponseDto> GetRiderByInitials(string name, string surname);
         public Task<RiderResponseDto> AddRider(NewRiderRequestDto riderDto);
+        public Task<RiderResponseDto> RemoveRider(Guid id);
+        public Task<RiderResponseDto> UpdateRider(UpdateRiderRequestDto riderDto);
     }
 }
