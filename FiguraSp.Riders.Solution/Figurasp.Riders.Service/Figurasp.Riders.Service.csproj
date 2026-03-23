@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\FiguraSp.Riders.Model\FiguraSp.Riders.Model.csproj" />
+  </ItemGroup>
+
 </Project>
