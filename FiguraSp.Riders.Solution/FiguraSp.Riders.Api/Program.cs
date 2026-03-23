@@ -1,12 +1,17 @@
+using FiguraSp.Riders.Api.Extensions;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Services
+    .AddSharedServices(builder.Configuration)
+    .AddCustomServices();
 
 builder.Services.AddControllers();
 
-var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+//##############################################################MIDDLEWARE###############
+
+var app = builder.Build();
 
 app.UseAuthorization();
 
