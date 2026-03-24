@@ -2,11 +2,11 @@ using FiguraSp.Riders.Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services
-    .AddSharedServices(builder.Configuration)
-    .AddCustomServices();
-
 builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSharedDbConnection(builder.Configuration);
+builder.Services.AddCustomServices();
+builder.Services.AddSharedJwtScheme(builder.Configuration);
 
 
 //##############################################################MIDDLEWARE###############
@@ -14,7 +14,5 @@ builder.Services.AddControllers();
 var app = builder.Build();
 
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();

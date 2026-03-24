@@ -2,6 +2,7 @@
 using FiguraSp.Riders.Entity;
 using FiguraSp.Riders.Model.DTOs.Requests;
 using FiguraSp.Riders.Model.DTOs.Responses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FiguraSp.Riders.Api.Controllers
@@ -12,6 +13,8 @@ namespace FiguraSp.Riders.Api.Controllers
     {
         [HttpGet]
         [Route("Riders")]
+        //comes directly from the shared library, so it is protected by the jwt scheme, so we need to be authorized to access it
+        [Authorize]
         public async Task<ActionResult<List<Rider>>> GetAllRiders()
         {
             var riders = await riderService.GetRiders();

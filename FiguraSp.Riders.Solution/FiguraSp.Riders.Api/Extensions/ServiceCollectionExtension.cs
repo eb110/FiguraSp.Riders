@@ -6,10 +6,18 @@ namespace FiguraSp.Riders.Api.Extensions
 {
     public static class ServiceCollectionExtension
     {
-        public static IServiceCollection AddSharedServices(this IServiceCollection services, IConfiguration config)
+        public static IServiceCollection AddSharedDbConnection(this IServiceCollection services, IConfiguration config)
         {
             //add db
-            SharedService.AddSharedServies<RidersDbContext>(services, config);
+            SharedService.AddSharedSqlService<RidersDbContext>(services, config);
+
+            return services;
+        }
+
+        public static IServiceCollection AddSharedJwtScheme(this IServiceCollection services, IConfiguration config)
+        {
+            //add db
+            SharedService.AddJwtSharedService(services, config);
 
             return services;
         }
