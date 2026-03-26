@@ -28,5 +28,15 @@ namespace FiguraSp.Riders.Api.Extensions
 
             return services;
         }
+
+        public static IApplicationBuilder UserSharedGatewayMiddleware(this IApplicationBuilder app)
+        {
+            //register middleware such as:
+            //global exception -> handle external errors
+            //listen to api gateway only -> block all outside calls
+            SharedService.UseSharedGatewary(app);
+
+            return app;
+        }
     }
 }

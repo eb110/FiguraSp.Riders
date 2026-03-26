@@ -12,7 +12,7 @@ builder.Services.AddSharedJwtScheme(builder.Configuration);
 //##############################################################MIDDLEWARE###############
 
 var app = builder.Build();
-
+app.UserSharedGatewayMiddleware();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();

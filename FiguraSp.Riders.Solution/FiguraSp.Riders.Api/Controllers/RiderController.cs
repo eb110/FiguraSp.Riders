@@ -14,7 +14,6 @@ namespace FiguraSp.Riders.Api.Controllers
         [HttpGet]
         [Route("Riders")]
         //comes directly from the shared library, so it is protected by the jwt scheme, so we need to be authorized to access it
-        [Authorize]
         public async Task<ActionResult<List<Rider>>> GetAllRiders()
         {
             var riders = await riderService.GetRiders();
@@ -29,6 +28,7 @@ namespace FiguraSp.Riders.Api.Controllers
         }
 
         [HttpPut]
+        [Authorize]
         public async Task<ActionResult<RiderResponseDto>> UpdateRider([FromBody] UpdateRiderRequestDto updateRider)
         {
             var response = await riderService.UpdateRider(updateRider);
@@ -52,6 +52,7 @@ namespace FiguraSp.Riders.Api.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<RiderResponseDto>> AddRider([FromBody] NewRiderRequestDto newRider)
         {
             var response = await riderService.AddRider(newRider);
@@ -65,6 +66,7 @@ namespace FiguraSp.Riders.Api.Controllers
         }
 
         [HttpDelete]
+        [Authorize]
         public async Task<ActionResult> DeleteRider(Guid id)
         {
             var response = await riderService.RemoveRider(id);
