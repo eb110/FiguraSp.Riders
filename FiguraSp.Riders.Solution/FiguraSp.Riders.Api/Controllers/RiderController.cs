@@ -1,5 +1,4 @@
 ﻿using Figurasp.Riders.Service.Services;
-using FiguraSp.Riders.Entity;
 using FiguraSp.Riders.Model.DTOs.Requests;
 using FiguraSp.Riders.Model.DTOs.Responses;
 using Microsoft.AspNetCore.Authorization;
@@ -14,17 +13,30 @@ namespace FiguraSp.Riders.Api.Controllers
         [HttpGet]
         [Route("Riders")]
         //comes directly from the shared library, so it is protected by the jwt scheme, so we need to be authorized to access it
-        public async Task<ActionResult<List<Rider>>> GetAllRiders()
+        public async Task<ActionResult<List<RiderResponseDto>>> GetAllRiders()
         {
             var riders = await riderService.GetRiders();
             return Ok(riders);
         }
 
         [HttpGet]
-        public async Task<ActionResult<Rider>> GetRiderById(Guid id)
+        public async Task<ActionResult<RiderResponseDto>> GetRiderById(Guid id)
         {
-            var rider = await riderService.GetRiderById(id);
-            return Ok(rider);
+            var result = await riderService.GetRiderById(id);
+            if(result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+        [HttpGet]
+        [Route("SeasonRiders")]
+        public async Task<ActionResult<List<RiderResponseDto>>> SeasonRiders(DateOnly year)
+        {
+            var result = await riderService.GetSeasonRiders(year);
+
+            return Ok(result);
         }
 
         [HttpPut]

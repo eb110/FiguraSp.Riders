@@ -2,6 +2,7 @@
 using FiguraSp.Riders.Model.Data;
 using FiguraSp.Riders.Model.DTOs.Requests;
 using FiguraSp.Riders.Model.DTOs.Responses;
+using FiguraSp.Riders.Model.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Figurasp.Riders.Service.Services
@@ -33,14 +34,14 @@ namespace Figurasp.Riders.Service.Services
                 return new() { Errors = ["Failed to add rider"] };
             }
 
-            return new() { Success = true, ResponseRider = rider};
+            return new() { Success = true };
         }
 
-        public async Task<Rider> GetRiderById(Guid id)
+        public async Task<RiderResponseDto> GetRiderById(Guid id)
         {
             IQueryable<Rider> query = context.Riders.Where(r => r.Id.Equals(id)).AsQueryable();
             var rider = await context.GetFirstOrDefaultAsync(query);
-            return rider;
+            return rider.ToRiderResponseDto();
         }
 
         public async Task<RiderResponseDto> GetRiderByInitials(string name, string surname)
@@ -51,14 +52,29 @@ namespace Figurasp.Riders.Service.Services
             {
                 return new() { Errors = ["Rider not found"] };
             }
-            return new() { Success = true, ResponseRider = rider};
+            return rider.ToRiderResponseDto();
         }
 
-        public async Task<List<Rider>> GetRiders()
+        public async Task<List<RiderResponseDto>> GetRiders()
         {
             IQueryable<Rider> query = context.Riders.AsQueryable().AsNoTracking();
             var riders = await context.GetEntitiesToListAsync(query);
-            return riders;
+
+            List<RiderResponseDto> result = [.. riders.Select(x => x.ToRiderResponseDto())];
+
+            return result;
+        }
+
+        public async Task<List<RiderResponseDto>> GetSeasonRiders(DateOnly year)
+        {
+            DateOnly seasonDateStart = year.AddYears(-50);
+            DateOnly seasonDateEnd = year.AddYears(-16);
+            IQueryable<Rider> query = context.Riders.Where(x => x.DoB >= seasonDateStart && x.DoB <= seasonDateEnd).AsQueryable().AsNoTracking();
+
+            var riders = await context.GetEntitiesToListAsync(query);
+            List<RiderResponseDto> result = [..riders.Select(x => x.ToRiderResponseDto())];
+
+            return result;
         }
 
         public async Task<RiderResponseDto> RemoveRider(Guid id)
@@ -77,7 +93,7 @@ namespace Figurasp.Riders.Service.Services
             {
                 return new() { Errors = ["Failed to remove rider"] };
             }
-            return new() { Success = true, ResponseRider = existRider };
+            return new() { Success = true };
         }
 
         public async Task<RiderResponseDto> UpdateRider(UpdateRiderRequestDto riderDto)
@@ -99,17 +115,18 @@ namespace Figurasp.Riders.Service.Services
             {
                 return new() { Errors = ["Failed to update rider"] };
             }
-            return new() { Success = true, ResponseRider = existRider };
+            return new() { Success = true };
         }
     }
 
     public interface IRiderService
     {
-        public Task<List<Rider>> GetRiders();
-        public Task<Rider> GetRiderById(Guid id);
+        public Task<List<RiderResponseDto>> GetRiders();
+        public Task<RiderResponseDto> GetRiderById(Guid id);
         public Task<RiderResponseDto> GetRiderByInitials(string name, string surname);
         public Task<RiderResponseDto> AddRider(NewRiderRequestDto riderDto);
         public Task<RiderResponseDto> RemoveRider(Guid id);
         public Task<RiderResponseDto> UpdateRider(UpdateRiderRequestDto riderDto);
+        public Task<List<RiderResponseDto>> GetSeasonRiders(DateOnly year);
     }
 }
