@@ -11,7 +11,9 @@ namespace Figurasp.Riders.Service.Services
     {
         public async Task<RiderResponseDto> AddRider(NewRiderRequestDto riderDto)
         {
-            IQueryable<Rider> existQuery = context.Riders.Where(r => r.Name.Equals(riderDto.Name) && r.Surname.Equals(riderDto.Surname)).AsQueryable();
+            IQueryable<Rider> existQuery = context.Riders
+                .Where(r => r.Name.Equals(riderDto.Name) && 
+                r.Surname.Equals(riderDto.Surname) && r.DoB.Equals(riderDto.DoB)).AsQueryable();
             var existRider = await context.GetFirstOrDefaultAsync(existQuery);
             if (existRider != null)
             {
@@ -69,7 +71,7 @@ namespace Figurasp.Riders.Service.Services
         {
             DateOnly seasonDateStart = year.AddYears(-50);
             DateOnly seasonDateEnd = year.AddYears(-16);
-            IQueryable<Rider> query = context.Riders.Where(x => x.DoB >= seasonDateStart && x.DoB <= seasonDateEnd).AsQueryable().AsNoTracking();
+            IQueryable<Rider> query = context.Riders.Where(x => x.DoB >= seasonDateStart && x.DoB <= seasonDateEnd).OrderBy(x => x.Surname).AsQueryable().AsNoTracking();
 
             var riders = await context.GetEntitiesToListAsync(query);
             List<RiderResponseDto> result = [..riders.Select(x => x.ToRiderResponseDto())];

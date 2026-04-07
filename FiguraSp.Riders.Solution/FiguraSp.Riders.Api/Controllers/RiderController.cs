@@ -64,7 +64,6 @@ namespace FiguraSp.Riders.Api.Controllers
         }
 
         [HttpPost]
-        [Authorize]
         public async Task<ActionResult<RiderResponseDto>> AddRider([FromBody] NewRiderRequestDto newRider)
         {
             var response = await riderService.AddRider(newRider);
