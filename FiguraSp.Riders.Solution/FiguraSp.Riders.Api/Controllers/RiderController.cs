@@ -30,6 +30,14 @@ namespace FiguraSp.Riders.Api.Controllers
             return BadRequest(result);
         }
 
+        [HttpPost]
+        [Route("GameRiders")]
+        public async Task<ActionResult<List<RiderResponseDto>>> GameRiders([FromBody] List<Guid> ridersId)
+        {
+            var response = await riderService.GetGameRiders(ridersId);
+            return Ok(response);
+        }
+
         [HttpGet]
         [Route("SeasonRiders")]
         public async Task<ActionResult<List<RiderResponseDto>>> SeasonRiders(DateOnly year)

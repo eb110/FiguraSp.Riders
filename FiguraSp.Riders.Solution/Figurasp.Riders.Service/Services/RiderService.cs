@@ -39,6 +39,22 @@ namespace Figurasp.Riders.Service.Services
             return new() { Success = true };
         }
 
+        public async Task<List<RiderResponseDto>> GetGameRiders(List<Guid> ridersId)
+        {
+            IQueryable<Rider> query = context.Riders.Where(x => ridersId.Contains(x.Id)).AsQueryable().AsNoTracking();
+            List<RiderResponseDto> response = [];
+            try
+            {
+                var entities = await context.GetEntitiesToListAsync(query);
+                response = [.. entities.Select(x => x.ToRiderResponseDto())];
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("fetch of game riders failed: " + ex.Message);
+            }
+            return response;
+        }
+
         public async Task<RiderResponseDto> GetRiderById(Guid id)
         {
             IQueryable<Rider> query = context.Riders.Where(r => r.Id.Equals(id)).AsQueryable();
@@ -130,5 +146,6 @@ namespace Figurasp.Riders.Service.Services
         public Task<RiderResponseDto> RemoveRider(Guid id);
         public Task<RiderResponseDto> UpdateRider(UpdateRiderRequestDto riderDto);
         public Task<List<RiderResponseDto>> GetSeasonRiders(DateOnly year);
+        public Task<List<RiderResponseDto>> GetGameRiders(List<Guid> ridersId);
     }
 }
